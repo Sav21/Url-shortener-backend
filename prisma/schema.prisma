@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String?
+  createdAt DateTime @default(now())
+
+  shortenedLinks ShortenedLink[]
+}
+
+model ShortenedLink {
+  id        String   @id @default(uuid())
+  slug      String   @unique
+  url       String
+  ownerId   String
+  createdAt DateTime @default(now())
+
+  owner User @relation(fields: [ownerId], references: [id])
+}
